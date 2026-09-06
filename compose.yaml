@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    init: true
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      ALLOW_PREVIEW_ORIGINS: 'false'
+      WORKER_CONCURRENCY: '1'
+      MAX_QUEUED_JOBS: '2'
+      MAX_TOTAL_SIZE: '104857600'
+      UPLOAD_DIR: /app/backend/uploads
+    tmpfs:
+      - /app/backend/uploads:rw,noexec,nosuid,size=384m,uid=1000,gid=1000,mode=0700
+    mem_limit: 2g
+    cpus: 2.0
+    restart: unless-stopped
+    stop_grace_period: 15s
+    security_opt:
+      - no-new-privileges:true
