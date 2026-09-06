@@ -2,6 +2,7 @@ import { createCanvas, DOMMatrix, ImageData, Path2D } from '@napi-rs/canvas';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { PDFPageProxy } from 'pdfjs-dist/types/src/display/api.js';
 import { getContactParser } from '../parsers/parserProvider.js';
 import type { Contact, FileProgress, ProcessingOptions, UploadedFile } from '../types.js';
@@ -95,14 +96,15 @@ export async function processPdf(
   if (!buffer.subarray(0, 1024).includes(Buffer.from('%PDF-')))
     throw new AppError(422, 'This file is not a valid PDF. Renaming a file to .pdf does not convert it.');
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const assetUrl = (directory: string) => pathToFileURL(path.join(pdfRoot, directory) + path.sep).href;
   const task = pdfjs.getDocument({
     data: new Uint8Array(buffer),
     isEvalSupported: false,
     useSystemFonts: true,
-    standardFontDataUrl: path.join(pdfRoot, 'standard_fonts') + path.sep,
-    cMapUrl: path.join(pdfRoot, 'cmaps') + path.sep,
+    standardFontDataUrl: assetUrl('standard_fonts'),
+    cMapUrl: assetUrl('cmaps'),
     cMapPacked: true,
-    wasmUrl: path.join(pdfRoot, 'wasm') + path.sep,
+    wasmUrl: assetUrl('wasm'),
     maxImageSize: 16_000_000,
     verbosity: 0,
   });

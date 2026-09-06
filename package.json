@@ -40,5 +40,9 @@
     "vite": "$vite",
     "@napi-rs/canvas": "0.1.100"
   },
-  "type": "module"
+  "type": "module",
+  "allowScripts": {
+    "tesseract.js@6.0.1": true,
+    "esbuild@0.28.2": true
+  }
 }
