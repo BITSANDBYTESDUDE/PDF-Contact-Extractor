@@ -32,8 +32,9 @@ export interface PhoneMatch extends PhoneValidation {
   end: number;
 }
 const blockedLabel =
-  /(?:invoice|order|cnic|nic|passport|account|reference|ref|amount|price|total|date|dob|id|zip|postal)\s*(?:number|no\.?|id|#)?\s*[:#=-]?\s*$/i;
-const phoneLabel = /(?:phone|mobile|contact|tel(?:ephone)?|cell|whatsapp)\s*(?:number|no\.?)?\s*[:#=-]?\s*$/i;
+  /(?:invoice|order|cnic|nic|passport|account|reference|ref|amount|price|total|date|dob|id|zip|postal|tracking|cheque|check|tax|ntn|strn)\s*(?:number|no\.?|id|#)?\s*[:#=-]?\s*$/i;
+const phoneLabel =
+  /(?:phone|mobile|mob|ph|contact|tel(?:ephone)?|cell(?:ular)?|whatsapp|direct)\s*(?:number|no\.?|id|#)?\s*[:#=-]?\s*$/i;
 // Require an explicit international prefix, or a Pakistani national/country prefix.
 // Restrict candidates to one line, and do not match inside IDs or date fragments.
 const candidatePattern = /(?<![\p{L}\p{N}./-])(?:\+\d|00\d|0\d|92[ .-]?\d)[\d ().-]{5,}\d(?![\p{L}\p{N}])/gu;
@@ -43,7 +44,7 @@ export function extractPhones(line: string): PhoneMatch[] {
   const candidates = [...line.matchAll(candidatePattern)];
   // Retain explicitly labelled, invalid numbers for human review instead of hiding them.
   const labelled =
-    /(?:phone|mobile|tel(?:ephone)?|cell|whatsapp|contact)\s*(?:number|no\.?)?\s*[:#=-]\s*([+\d][\d ().-]{3,}\d)/gi;
+    /(?:phone|mobile|mob|ph|tel(?:ephone)?|cell(?:ular)?|whatsapp|contact|direct)\s*(?:number|no\.?|#)?\s*[:#=-]\s*([+\d][\d ().-]{3,}\d)/gi;
   for (const match of line.matchAll(labelled)) {
     const start = match.index! + match[0].indexOf(match[1]);
     if (!candidates.some((c) => start >= c.index! && start < c.index! + c[0].length)) {
