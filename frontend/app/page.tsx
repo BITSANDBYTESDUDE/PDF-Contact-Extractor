@@ -11,7 +11,7 @@ export default function Page() {
           rel="noopener noreferrer"
           className="glow-link"
         >
-          BITSANDBYTESDUDE – A SaaS / Web Application
+          Powered By BITSANDBYTESDUDE – A SaaS / Web Application
         </Link>
       </p>
       <Dashboard />
